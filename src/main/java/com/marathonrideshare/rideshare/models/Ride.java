@@ -1,5 +1,7 @@
 package com.marathonrideshare.rideshare.models;
 
+import com.marathonrideshare.rideshare.shared.Location;
+import com.marathonrideshare.rideshare.shared.Passenger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,5 +40,5 @@ public class Ride {
 
     private int availableSeats;
 
-    private List<String> passengers;
+    private List<Passenger> passengers;
 }

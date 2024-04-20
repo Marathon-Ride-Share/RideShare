@@ -1,5 +1,6 @@
 package com.marathonrideshare.rideshare.dto;
 
+import com.marathonrideshare.rideshare.shared.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,10 +9,9 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class BookRideResponse {
-    private String bookingId;
     private String rideId;
     private String driverName;
     private String userName;
     private String status;
-    private LocationInfo pickupLocation;
+    private Location pickupLocation;
 }

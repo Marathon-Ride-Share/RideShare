@@ -1,5 +1,6 @@
 package com.marathonrideshare.rideshare.dto;
 
+import com.marathonrideshare.rideshare.shared.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,5 +11,5 @@ import lombok.Data;
 public class BookRideRequest {
     private String userName;
     private String rideId;
-    private LocationInfo pickupLocation;
+    private Location pickupLocation;
 }

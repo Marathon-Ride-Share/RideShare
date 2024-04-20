@@ -1,10 +1,9 @@
 package com.marathonrideshare.rideshare.dto;
 
-import com.marathonrideshare.rideshare.dto.LocationInfo;
+import com.marathonrideshare.rideshare.shared.Location;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 @Data
 @Builder
@@ -17,8 +16,8 @@ public class KafkaChatGroupEvent {
     }
 
     private String rideId;
-    private LocationInfo origin;
-    private LocationInfo destination;
+    private Location origin;
+    private Location destination;
     private Action action;
     private String userName;
 }

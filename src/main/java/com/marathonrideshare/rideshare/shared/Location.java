@@ -1,4 +1,4 @@
-package com.marathonrideshare.rideshare.models;
+package com.marathonrideshare.rideshare.shared;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

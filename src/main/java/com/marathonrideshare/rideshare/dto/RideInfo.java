@@ -1,5 +1,7 @@
 package com.marathonrideshare.rideshare.dto;
 
+import com.marathonrideshare.rideshare.shared.Location;
+import com.marathonrideshare.rideshare.shared.Passenger;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,8 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 public class RideInfo {
     private String rideId;
-    private LocationInfo origin;
-    private LocationInfo destination;
+    private Location origin;
+    private Location destination;
     private DriverInfo driverInfo;
     private VehicleInfo vehicle;
     private float price;
@@ -21,5 +23,5 @@ public class RideInfo {
     private LocalDateTime endTime;
     private String status;
     private int availableSeats;
-    private List<String> passengers;
+    private List<Passenger> passengers;
 }

@@ -1,9 +1,8 @@
 package com.marathonrideshare.rideshare.controllers;
 
-import com.marathonrideshare.rideshare.dto.CreateRideRequest;
-import com.marathonrideshare.rideshare.dto.CreateRideResponse;
-import com.marathonrideshare.rideshare.dto.RideInfo;
-import com.marathonrideshare.rideshare.services.RideService;
+import com.marathonrideshare.rideshare.dto.*;
+import com.marathonrideshare.rideshare.services.RideBookingService;
+import com.marathonrideshare.rideshare.services.RideCreationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,21 +12,25 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class RideShareController {
 
-    private final RideService rideService;
+    private final RideCreationService rideCreationService;
+    private final RideBookingService rideBookingService;
 
     @Autowired
-    public RideShareController(RideService rideService) {
-        this.rideService = rideService;
+    public RideShareController(RideCreationService rideCreationService,
+                               RideBookingService rideBookingService) {
+        this.rideCreationService = rideCreationService;
+        this.rideBookingService = rideBookingService;
     }
     @PostMapping("/rides")
     public ResponseEntity<CreateRideResponse> createRide(@RequestBody CreateRideRequest request) {
-        RideInfo ride = rideService.createRide(request);
-        return ResponseEntity.ok(new CreateRideResponse(ride));
+        CreateRideResponse response = rideCreationService.createRide(request);
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/rides/book/")
-    public void bookRide() {
-        // Book a ride
+    @PostMapping("/rides/book")
+    public ResponseEntity<BookRideResponse> bookRide(@RequestBody BookRideRequest request) {
+        BookRideResponse response = rideBookingService.bookRide(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/rides/{rideId}")
