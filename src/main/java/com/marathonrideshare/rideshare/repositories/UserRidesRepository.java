@@ -1,4 +1,4 @@
-package com.marathonrideshare.rideshare.repository;
+package com.marathonrideshare.rideshare.repositories;
 
 import com.marathonrideshare.rideshare.models.UserRides;
 import org.springframework.data.mongodb.repository.MongoRepository;
