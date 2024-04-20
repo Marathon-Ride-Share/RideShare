@@ -2,7 +2,7 @@ package com.marathonrideshare.rideshare.controllers;
 
 import com.marathonrideshare.rideshare.dto.CreateRideRequest;
 import com.marathonrideshare.rideshare.dto.CreateRideResponse;
-import com.marathonrideshare.rideshare.dto.Ride;
+import com.marathonrideshare.rideshare.dto.RideInfo;
 import com.marathonrideshare.rideshare.services.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class RideShareController {
     }
     @PostMapping("/rides")
     public ResponseEntity<CreateRideResponse> createRide(@RequestBody CreateRideRequest request) {
-        Ride ride = rideService.createRide(request);
+        RideInfo ride = rideService.createRide(request);
         return ResponseEntity.ok(new CreateRideResponse(ride));
     }
 

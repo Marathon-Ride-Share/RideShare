@@ -1,9 +1,11 @@
 package com.marathonrideshare.rideshare.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 @Data
+@Builder
 @AllArgsConstructor
 public class CreateRideResponse {
-    private Ride ride;
+    private RideInfo ride;
 }
