@@ -9,12 +9,9 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class UserServiceClient {
     private final RestTemplate restTemplate;
-    private String userServiceUrl;
 
     @Value("${userService.url}")
-    public void setApiGatewayUrl(String userServiceUrl) {
-        this.userServiceUrl = userServiceUrl;
-    }
+    private String userServiceUrl;
 
     @Autowired
     public UserServiceClient(RestTemplate restTemplate) {

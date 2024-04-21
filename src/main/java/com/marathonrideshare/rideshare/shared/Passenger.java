@@ -13,4 +13,5 @@ public class Passenger {
     private String passengerName;
     @NonNull
     private Location pickUpLocation;
+    private String paymentOrderId;
 }

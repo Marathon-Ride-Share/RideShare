@@ -9,6 +9,7 @@ import com.marathonrideshare.rideshare.models.UserRides;
 import com.marathonrideshare.rideshare.repositories.RideRepository;
 import com.marathonrideshare.rideshare.repositories.UserRidesRepository;
 import com.marathonrideshare.rideshare.shared.Passenger;
+import com.marathonrideshare.rideshare.components.PaymentServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -17,17 +18,21 @@ import java.util.List;
 
 @Service
 public class RideBookingService {
-    private static final String RIDE_EVENTS = "ride-events";
+
+    private static final String USER_CHAT = "user-chat";
     private static final boolean FALSE = false;
 
+    private final PaymentServiceClient paymentServiceClient;
     private final RideRepository rideRepository;
     private final UserRidesRepository userRidesRepository;
     private final KafkaTemplate<String, KafkaChatGroupEvent> kafkaTemplate;
 
     @Autowired
-    public RideBookingService(RideRepository rideRepository,
+    public RideBookingService(PaymentServiceClient paymentServiceClient,
+                              RideRepository rideRepository,
                               UserRidesRepository userRidesRepository,
                               KafkaTemplate<String, KafkaChatGroupEvent> kafkaTemplate) {
+        this.paymentServiceClient = paymentServiceClient;
         this.rideRepository = rideRepository;
         this.userRidesRepository = userRidesRepository;
         this.kafkaTemplate = kafkaTemplate;
@@ -37,11 +42,15 @@ public class RideBookingService {
         // get ride by id
         Ride ride = rideRepository.findById(request.getRideId()).orElseThrow(() -> new RuntimeException("Ride not found"));
 
+        // create a payment order for the user
+        String paymentOrderId = paymentServiceClient.createPaymentOrder(request.getUserName(), ride.getPrice());
+
         // add current user to passengers for the ride
         ride.getPassengers().add(
                 Passenger.builder()
                         .passengerName(request.getUserName())
                         .pickUpLocation(request.getPickupLocation())
+                        .paymentOrderId(paymentOrderId)
                         .build()
         );
 
@@ -76,7 +85,7 @@ public class RideBookingService {
                 .build();
 
         // Send Kafka event
-        kafkaTemplate.send(RIDE_EVENTS, kafkaChatGroupEvent);
+        kafkaTemplate.send(USER_CHAT, kafkaChatGroupEvent);
 
         return BookRideResponse.builder()
                 .rideId(request.getRideId())

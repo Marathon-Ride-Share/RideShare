@@ -18,21 +18,21 @@ public class RideCreationService {
 
     private static final String AVAILABLE = "AVAILABLE";
     private static final boolean TRUE = true;
-    private static final String RIDE_EVENTS = "ride-events";
+    private static final String USER_CHAT = "user-chat";
 
     private final UserServiceClient userServiceClient;
     private final RideRepository rideRepository;
     private final UserRidesRepository userRidesRepository;
-    private final KafkaTemplate<String, KafkaChatGroupEvent> kafkaTemplate;
+    private final KafkaTemplate<String, KafkaChatGroupEvent> kafkaChatGroupEventTemplate;
 
     @Autowired
     public RideCreationService(UserServiceClient userServiceClient, RideRepository rideRepository,
                                UserRidesRepository userRidesRepository,
-                               KafkaTemplate<String, KafkaChatGroupEvent> kafkaTemplate) {
+                               KafkaTemplate<String, KafkaChatGroupEvent> kafkaChatGroupEventTemplate) {
         this.userServiceClient = userServiceClient;
         this.rideRepository = rideRepository;
         this.userRidesRepository = userRidesRepository;
-        this.kafkaTemplate = kafkaTemplate;
+        this.kafkaChatGroupEventTemplate = kafkaChatGroupEventTemplate;
     }
     public CreateRideResponse createRide(CreateRideRequest request) {
         UserInfo userInfo = userServiceClient.getUserInfo(request.getUserName());
@@ -82,7 +82,7 @@ public class RideCreationService {
                 .build();
 
         // Send Kafka event
-        kafkaTemplate.send(RIDE_EVENTS, kafkaChatGroupEvent);
+        kafkaChatGroupEventTemplate.send(USER_CHAT, kafkaChatGroupEvent);
 
         return CreateRideResponse.builder().ride(
                 RideInfo.builder()
