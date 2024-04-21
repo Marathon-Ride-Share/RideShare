@@ -17,7 +17,7 @@ public class RideInfo {
     private Location origin;
     private Location destination;
     private DriverInfo driverInfo;
-    private VehicleInfo vehicle;
+    private VehicleInfo vehicleInfo;
     private float price;
     private LocalDateTime startTime;
     private LocalDateTime endTime;

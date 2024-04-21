@@ -94,7 +94,7 @@ public class RideCreationService {
                         .price(request.getPrice())
                         .startTime(request.getStartTime())
                         .driverInfo(userInfo.getDriverInfo())
-                        .vehicle(userInfo.getVehicle())
+                        .vehicleInfo(userInfo.getVehicle())
                         .status(AVAILABLE)
                         .build()
         ).build();
