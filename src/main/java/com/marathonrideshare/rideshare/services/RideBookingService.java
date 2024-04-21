@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 public class RideBookingService {
-    private static final String USER_CHAT_TOPIC = "user-chat";
+    private static final String RIDE_EVENTS = "ride-events";
     private static final boolean FALSE = false;
 
     private final RideRepository rideRepository;
@@ -76,7 +76,7 @@ public class RideBookingService {
                 .build();
 
         // Send Kafka event
-        kafkaTemplate.send(USER_CHAT_TOPIC, kafkaChatGroupEvent);
+        kafkaTemplate.send(RIDE_EVENTS, kafkaChatGroupEvent);
 
         return BookRideResponse.builder()
                 .rideId(request.getRideId())

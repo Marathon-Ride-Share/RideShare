@@ -18,7 +18,7 @@ public class RideCreationService {
 
     private static final String AVAILABLE = "AVAILABLE";
     private static final boolean TRUE = true;
-    private static final String USER_CHAT_TOPIC = "user-chat";
+    private static final String RIDE_EVENTS = "ride-events";
 
     private final UserServiceClient userServiceClient;
     private final RideRepository rideRepository;
@@ -82,7 +82,7 @@ public class RideCreationService {
                 .build();
 
         // Send Kafka event
-        kafkaTemplate.send(USER_CHAT_TOPIC, kafkaChatGroupEvent);
+        kafkaTemplate.send(RIDE_EVENTS, kafkaChatGroupEvent);
 
         return CreateRideResponse.builder().ride(
                 RideInfo.builder()

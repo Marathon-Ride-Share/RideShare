@@ -12,5 +12,4 @@ public class CompleteRideResponse {
     private String rideId;
     private String status;
     private LocalDateTime arrivalTime;
-    private float fare;
 }

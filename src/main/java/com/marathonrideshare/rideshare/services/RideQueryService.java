@@ -4,7 +4,10 @@ import com.marathonrideshare.rideshare.components.MapBoxServiceClient;
 import com.marathonrideshare.rideshare.components.UserServiceClient;
 import com.marathonrideshare.rideshare.dto.*;
 import com.marathonrideshare.rideshare.models.Ride;
+import com.marathonrideshare.rideshare.models.RideAssociation;
+import com.marathonrideshare.rideshare.models.UserRides;
 import com.marathonrideshare.rideshare.repositories.RideRepository;
+import com.marathonrideshare.rideshare.repositories.UserRidesRepository;
 import com.marathonrideshare.rideshare.shared.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +20,17 @@ public class RideQueryService {
 
     private static final String CREATED = "CREATED";
     private final RideRepository rideRepository;
+    private final UserRidesRepository userRidesRepository;
     private final UserServiceClient userServiceClient;
     private final MapBoxServiceClient mapBoxServiceClient;
 
     @Autowired
     public RideQueryService(RideRepository rideRepository,
+                            UserRidesRepository userRidesRepository,
                             UserServiceClient userServiceClient,
                             MapBoxServiceClient mapBoxServiceClient) {
         this.rideRepository = rideRepository;
+        this.userRidesRepository = userRidesRepository;
         this.userServiceClient = userServiceClient;
         this.mapBoxServiceClient = mapBoxServiceClient;
     }
@@ -89,6 +95,29 @@ public class RideQueryService {
         // get rides by origin and destination
         return SearchRideResponse.builder()
                 .rides(ridesInfos)
+                .build();
+    }
+
+    public RideHistoryResponse getRideHistory(String userId) {
+        // get all rides for the user
+        UserRides rides = userRidesRepository.findUserRidesByUserName(userId);
+
+        // Filter rides where user is the driver
+        List<String> driverRideIds = rides.getRides().stream()
+                .filter(RideAssociation::isDriver)
+                .map(RideAssociation::getRideId)
+                .collect(Collectors.toList());
+
+        // Filter rides where user is the passenger
+        List<String> passengerRideIds = rides.getRides().stream()
+                .filter(rideAssociation -> !rideAssociation.isDriver())
+                .map(RideAssociation::getRideId)
+                .collect(Collectors.toList());
+
+        // Create and Return RideHistoryResponse
+        return RideHistoryResponse.builder()
+                .driverRideIds(driverRideIds)
+                .passengerRideIds(passengerRideIds)
                 .build();
     }
 
