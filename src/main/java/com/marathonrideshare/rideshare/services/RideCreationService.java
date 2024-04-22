@@ -2,6 +2,7 @@ package com.marathonrideshare.rideshare.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marathonrideshare.rideshare.components.UserServiceClient;
 import com.marathonrideshare.rideshare.dto.*;
 import com.marathonrideshare.rideshare.exceptions.RideShareException;
@@ -28,12 +29,12 @@ public class RideCreationService {
     private final UserServiceClient userServiceClient;
     private final RideRepository rideRepository;
     private final UserRidesRepository userRidesRepository;
-    private final KafkaTemplate<String, KafkaChatGroupEvent> kafkaChatGroupEventTemplate;
+    private final KafkaTemplate<String, String> kafkaChatGroupEventTemplate;
 
     @Autowired
     public RideCreationService(UserServiceClient userServiceClient, RideRepository rideRepository,
                                UserRidesRepository userRidesRepository,
-                               KafkaTemplate<String, KafkaChatGroupEvent> kafkaChatGroupEventTemplate) {
+                               KafkaTemplate<String, String> kafkaChatGroupEventTemplate) {
         this.userServiceClient = userServiceClient;
         this.rideRepository = rideRepository;
         this.userRidesRepository = userRidesRepository;
@@ -87,8 +88,10 @@ public class RideCreationService {
                     .action(KafkaChatGroupEvent.Action.CREATE)
                     .build();
 
+            String kafkaChatGroupEventJson = new ObjectMapper().writeValueAsString(kafkaChatGroupEvent);
+
             // Send Kafka event
-            kafkaChatGroupEventTemplate.send(USER_CHAT, kafkaChatGroupEvent);
+            kafkaChatGroupEventTemplate.send(USER_CHAT, kafkaChatGroupEventJson);
 
             return CreateRideResponse.builder().ride(
                     RideInfo.builder()
