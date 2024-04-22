@@ -18,10 +18,9 @@ import java.time.LocalDateTime;
 
 @Service
 public class RideLifecycleService {
-
     private static final Logger logger = LoggerFactory.getLogger(RideLifecycleService.class);
     private static final String USER_CHAT = "user-chat";
-    private static final String USER_PAYMENT = "payment";
+    private static final String USER_PAYMENT = "user-payment";
     private final RideRepository rideRepository;
     private final KafkaTemplate<String, KafkaPaymentEvent> kafkaPaymentEventTemplate;
     private final KafkaTemplate<String, KafkaChatGroupEvent> kafkaChatGroupEventTemplate;

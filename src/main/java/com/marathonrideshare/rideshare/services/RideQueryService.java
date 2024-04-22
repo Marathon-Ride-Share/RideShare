@@ -83,6 +83,7 @@ public class RideQueryService {
             List<Ride> validRides = allRides.stream()
                     .filter(ride -> isWithin5Km(ride.getOrigin(), request.getLocation()) || isWithin5Km(ride.getDestination(), request.getLocation()))
                     .filter(ride -> ride.getAvailableSeats() > 0)
+                    .filter(ride -> ride.getStartTime().isAfter(request.getDatetime()))
                     .toList();
 
             // map rides to RideInfo
