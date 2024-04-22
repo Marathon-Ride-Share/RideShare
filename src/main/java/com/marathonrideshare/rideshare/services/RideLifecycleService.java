@@ -1,5 +1,7 @@
 package com.marathonrideshare.rideshare.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.marathonrideshare.rideshare.dto.CompleteRideResponse;
@@ -22,13 +24,13 @@ public class RideLifecycleService {
     private static final String USER_CHAT = "user-chat";
     private static final String USER_PAYMENT = "user-payment";
     private final RideRepository rideRepository;
-    private final KafkaTemplate<String, KafkaPaymentEvent> kafkaPaymentEventTemplate;
-    private final KafkaTemplate<String, KafkaChatGroupEvent> kafkaChatGroupEventTemplate;
+    private final KafkaTemplate<String, String> kafkaPaymentEventTemplate;
+    private final KafkaTemplate<String, String> kafkaChatGroupEventTemplate;
 
     @Autowired
     public RideLifecycleService(RideRepository rideRepository,
-                                KafkaTemplate<String, KafkaPaymentEvent> kafkaPaymentEventTemplate,
-                                KafkaTemplate<String, KafkaChatGroupEvent> kafkaChatGroupEventTemplate) {
+                                KafkaTemplate<String, String> kafkaPaymentEventTemplate,
+                                KafkaTemplate<String, String> kafkaChatGroupEventTemplate) {
         this.rideRepository = rideRepository;
         this.kafkaPaymentEventTemplate = kafkaPaymentEventTemplate;
         this.kafkaChatGroupEventTemplate = kafkaChatGroupEventTemplate;
@@ -68,8 +70,10 @@ public class RideLifecycleService {
                     .action(KafkaChatGroupEvent.Action.DELETE)
                     .build();
 
+            String kafkaChatGroupEventJson = new ObjectMapper().writeValueAsString(kafkaChatGroupEvent);
+
             // Send Kafka event
-            kafkaChatGroupEventTemplate.send(USER_CHAT, kafkaChatGroupEvent);
+            kafkaChatGroupEventTemplate.send(USER_CHAT, kafkaChatGroupEventJson);
 
             // create kafka payment event for all passengers
             ride.getPassengers().forEach(passenger -> {
@@ -79,7 +83,12 @@ public class RideLifecycleService {
                         .driverName(ride.getDriverName())
                         .rideId(ride.getRideId())
                         .build();
-                kafkaPaymentEventTemplate.send(USER_PAYMENT, kafkaPaymentEvent);
+                try {
+                    String kafkaPaymentEventJson = new ObjectMapper().writeValueAsString(kafkaPaymentEvent);
+                    kafkaPaymentEventTemplate.send(USER_PAYMENT, kafkaPaymentEventJson);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
             });
 
             return CompleteRideResponse.builder()

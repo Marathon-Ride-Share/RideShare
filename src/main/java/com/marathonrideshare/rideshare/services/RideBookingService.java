@@ -1,5 +1,6 @@
 package com.marathonrideshare.rideshare.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.marathonrideshare.rideshare.dto.BookRideRequest;
@@ -30,13 +31,13 @@ public class RideBookingService {
     private final PaymentServiceClient paymentServiceClient;
     private final RideRepository rideRepository;
     private final UserRidesRepository userRidesRepository;
-    private final KafkaTemplate<String, KafkaChatGroupEvent> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
     public RideBookingService(PaymentServiceClient paymentServiceClient,
                               RideRepository rideRepository,
                               UserRidesRepository userRidesRepository,
-                              KafkaTemplate<String, KafkaChatGroupEvent> kafkaTemplate) {
+                              KafkaTemplate<String, String> kafkaTemplate) {
         this.paymentServiceClient = paymentServiceClient;
         this.rideRepository = rideRepository;
         this.userRidesRepository = userRidesRepository;
@@ -90,8 +91,10 @@ public class RideBookingService {
                     .action(KafkaChatGroupEvent.Action.ADD_USER)
                     .build();
 
+            String kafkaChatGroupEventJson = new ObjectMapper().writeValueAsString(kafkaChatGroupEvent);
+
             // Send Kafka event
-            kafkaTemplate.send(USER_CHAT, kafkaChatGroupEvent);
+            kafkaTemplate.send(USER_CHAT, kafkaChatGroupEventJson);
 
             return BookRideResponse.builder()
                     .rideId(request.getRideId())
