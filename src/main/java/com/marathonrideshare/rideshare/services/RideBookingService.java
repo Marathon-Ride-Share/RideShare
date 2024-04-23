@@ -52,7 +52,7 @@ public class RideBookingService {
             // create a payment order for the user
             String paymentOrderId = paymentServiceClient.createPaymentOrder(request.getUserName(), ride.getPrice());
 
-            // add current user to passengers for the ride
+            // add current user to passengers for the ride.
             ride.getPassengers().add(
                     Passenger.builder()
                             .passengerName(request.getUserName())
