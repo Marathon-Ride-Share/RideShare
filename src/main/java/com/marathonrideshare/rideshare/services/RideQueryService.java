@@ -75,16 +75,22 @@ public class RideQueryService {
 
     public SearchRideResponse searchRides(SearchRideRequest request) throws RideShareException {
 
+        System.out.println("Request for search Ride: " + request);
+
         try {
             // get all rides whose status is CREATED and not yet STARTED
             List<Ride> allRides = rideRepository.findByStatus(CREATED);
 
+            System.out.println("List of all rides in db: " + allRides);
+
             // filter rides by origin and destination
             List<Ride> validRides = allRides.stream()
-                    .filter(ride -> isWithin5Km(ride.getOrigin(), request.getLocation()) || isWithin5Km(ride.getDestination(), request.getLocation()))
+                    .filter(ride -> isWithin50Km(ride.getOrigin(), request.getLocation()) || isWithin50Km(ride.getDestination(), request.getLocation()))
                     .filter(ride -> ride.getAvailableSeats() > 0)
-                    .filter(ride -> ride.getStartTime().isBefore(request.getDatetime()) && ride.getEndTime().isAfter(request.getDatetime()))
+                    .filter(ride -> ride.getStartTime().isBefore(request.getDatetime()))
                     .toList();
+
+            System.out.println("List of all valid rides in db: " + validRides);
 
             // map rides to RideInfo
             List<RideInfo> ridesInfos = validRides.stream()
@@ -149,11 +155,11 @@ public class RideQueryService {
         }
     }
 
-    private boolean isWithin5Km(Location location1, Location location2) {
+    private boolean isWithin50Km(Location location1, Location location2) {
         try {
             double distance = mapBoxServiceClient.getDistance(location1.getLongitude(), location1.getLatitude(),
                     location2.getLongitude(), location2.getLatitude());
-            return distance <= 5;
+            return distance <= 50;
         } catch (Exception e) {
             return false;
         }

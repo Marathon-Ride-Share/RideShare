@@ -22,7 +22,7 @@ import java.util.List;
 public class RideCreationService {
 
     private static final Logger logger = LoggerFactory.getLogger(RideCreationService.class);
-    private static final String AVAILABLE = "AVAILABLE";
+    private static final String CREATED = "CREATED";
     private static final boolean TRUE = true;
     private static final String USER_CHAT = "user-chat";
 
@@ -55,7 +55,7 @@ public class RideCreationService {
                     .price(request.getPrice())
                     .startTime(request.getStartTime())
                     .passengers(List.of())
-                    .status(AVAILABLE)
+                    .status(CREATED)
                     .availableSeats(request.getAvailableSeats())
                     .build();
 
@@ -107,7 +107,7 @@ public class RideCreationService {
                             .startTime(request.getStartTime())
                             .driverInfo(userInfo.getDriverInfo())
                             .vehicleInfo(userInfo.getVehicle())
-                            .status(AVAILABLE)
+                            .status(CREATED)
                             .build())
                     .build();
         } catch (RideShareException e) {
