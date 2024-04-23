@@ -44,11 +44,8 @@ public class RideCreationService {
     public CreateRideResponse createRide(CreateRideRequest request) throws RideShareException {
         try {
             UserInfo userInfo = userServiceClient.getUserInfo(request.getUserName());
-            // UserInfo userInfo = UserInfo.builder()
-            // .driverInfo(DriverInfo.builder().driverName("testUser").rating(0).build())
-            // .vehicle(VehicleInfo.builder().color("red").licensePlate("licence").make("make").model("model")
-            // .build())
-            // .build();
+
+            System.out.println("userInfo!!!"+userInfo);
 
             // build ride model
             Ride ride = Ride.builder()
@@ -113,10 +110,9 @@ public class RideCreationService {
                             .status(AVAILABLE)
                             .build())
                     .build();
-            // } catch (RideShareException e) {
-
-            // logger.error("Error creating ride: {}", e.getMessage());
-            // throw new RideShareException(e.getStatusCode(), e.getMessage());
+        } catch (RideShareException e) {
+         logger.error("Error creating ride: {}", e.getMessage());
+         throw new RideShareException(e.getStatusCode(), e.getMessage());
         } catch (Exception e) {
             logger.error("Error creating ride: {}", e.getMessage());
             throw new RideShareException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to create ride");

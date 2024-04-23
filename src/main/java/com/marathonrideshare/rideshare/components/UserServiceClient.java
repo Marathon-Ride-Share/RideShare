@@ -26,7 +26,7 @@ public class UserServiceClient {
 
     public UserInfo getUserInfo(String userId) throws RideShareException {
         try {
-            String url = userServiceUrl + "?userId=" + userId;
+            String url = userServiceUrl + userId;
             return restTemplate.getForObject(url, UserInfo.class);
         } catch (Exception e) {
             logger.error("Failed to get user info", e);
