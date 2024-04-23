@@ -52,6 +52,7 @@ public class RideCreationService {
                     .destination(request.getDestination())
                     .price(request.getPrice())
                     .startTime(request.getStartTime())
+                    .passengers(List.of())
                     .status(AVAILABLE)
                     .availableSeats(request.getAvailableSeats())
                     .build();
