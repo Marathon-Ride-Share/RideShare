@@ -19,7 +19,7 @@ public class PaymentServiceClient {
     private static final Logger logger = LoggerFactory.getLogger(PaymentServiceClient.class);
     private final RestTemplate restTemplate;
 
-    @Value("${paymentService.url}")
+    @Value("${paymentService.url}/new")
     private String paymentServiceUrl;
 
     @Autowired
@@ -47,8 +47,8 @@ public class PaymentServiceClient {
             }
 
             JSONObject json = new JSONObject(response.getBody());
-            boolean isOrderSuccessful = json.getBoolean("isOrderSuccessful");
-            String paymentOrderId = json.getString("paymentOrderId");
+            boolean isOrderSuccessful = json.getBoolean("success");
+            String paymentOrderId = json.getString("order_id");
 
             if (!isOrderSuccessful) {
                 throw new RuntimeException("Failed to create payment order");

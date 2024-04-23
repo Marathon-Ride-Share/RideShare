@@ -33,17 +33,22 @@ public class RideCreationService {
 
     @Autowired
     public RideCreationService(UserServiceClient userServiceClient, RideRepository rideRepository,
-                               UserRidesRepository userRidesRepository,
-                               KafkaTemplate<String, String> kafkaChatGroupEventTemplate) {
+            UserRidesRepository userRidesRepository,
+            KafkaTemplate<String, String> kafkaChatGroupEventTemplate) {
         this.userServiceClient = userServiceClient;
         this.rideRepository = rideRepository;
         this.userRidesRepository = userRidesRepository;
         this.kafkaChatGroupEventTemplate = kafkaChatGroupEventTemplate;
     }
+
     public CreateRideResponse createRide(CreateRideRequest request) throws RideShareException {
         try {
             UserInfo userInfo = userServiceClient.getUserInfo(request.getUserName());
-
+            // UserInfo userInfo = UserInfo.builder()
+            // .driverInfo(DriverInfo.builder().driverName("testUser").rating(0).build())
+            // .vehicle(VehicleInfo.builder().color("red").licensePlate("licence").make("make").model("model")
+            // .build())
+            // .build();
 
             // build ride model
             Ride ride = Ride.builder()
@@ -52,6 +57,7 @@ public class RideCreationService {
                     .destination(request.getDestination())
                     .price(request.getPrice())
                     .startTime(request.getStartTime())
+                    .passengers(List.of())
                     .status(AVAILABLE)
                     .availableSeats(request.getAvailableSeats())
                     .build();
@@ -105,16 +111,16 @@ public class RideCreationService {
                             .driverInfo(userInfo.getDriverInfo())
                             .vehicleInfo(userInfo.getVehicle())
                             .status(AVAILABLE)
-                            .build()
-            ).build();
-        } catch (RideShareException e) {
-            logger.error("Error creating ride: {}", e.getMessage());
-            throw new RideShareException(e.getStatusCode(), e.getMessage());
+                            .build())
+                    .build();
+            // } catch (RideShareException e) {
+
+            // logger.error("Error creating ride: {}", e.getMessage());
+            // throw new RideShareException(e.getStatusCode(), e.getMessage());
         } catch (Exception e) {
             logger.error("Error creating ride: {}", e.getMessage());
             throw new RideShareException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to create ride");
         }
     }
-
 
 }
