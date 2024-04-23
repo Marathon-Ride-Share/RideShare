@@ -8,6 +8,6 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class UserInfo {
-    private VehicleInfo vehicle;
+    private VehicleInfo vehicleInfo;
     private DriverInfo driverInfo;
 }
