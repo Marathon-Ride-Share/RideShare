@@ -61,6 +61,8 @@ public class RideBookingService {
                             .build()
             );
 
+            ride.setAvailableSeats(ride.getAvailableSeats() - 1);
+
             // save ride
             rideRepository.save(ride);
 
