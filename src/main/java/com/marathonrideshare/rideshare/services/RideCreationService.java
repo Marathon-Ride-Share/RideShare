@@ -1,5 +1,6 @@
 package com.marathonrideshare.rideshare.services;
 
+import com.marathonrideshare.rideshare.components.MapBoxServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,15 +31,17 @@ public class RideCreationService {
     private final RideRepository rideRepository;
     private final UserRidesRepository userRidesRepository;
     private final KafkaTemplate<String, String> kafkaChatGroupEventTemplate;
+    private final MapBoxServiceClient  mapBoxServiceClient;
 
     @Autowired
     public RideCreationService(UserServiceClient userServiceClient, RideRepository rideRepository,
             UserRidesRepository userRidesRepository,
-            KafkaTemplate<String, String> kafkaChatGroupEventTemplate) {
+            KafkaTemplate<String, String> kafkaChatGroupEventTemplate, MapBoxServiceClient mapBoxServiceClient) {
         this.userServiceClient = userServiceClient;
         this.rideRepository = rideRepository;
         this.userRidesRepository = userRidesRepository;
         this.kafkaChatGroupEventTemplate = kafkaChatGroupEventTemplate;
+        this.mapBoxServiceClient = mapBoxServiceClient;
     }
 
     public CreateRideResponse createRide(CreateRideRequest request) throws RideShareException {
@@ -46,6 +49,13 @@ public class RideCreationService {
             UserInfo userInfo = userServiceClient.getUserInfo(request.getUserName());
 
             System.out.println("userInfo!!!"+userInfo);
+
+            //check if valid route can exist
+            double distance = mapBoxServiceClient.getDistance(request.getOrigin().getLongitude(), request.getOrigin().getLatitude(),
+                    request.getDestination().getLongitude(), request.getDestination().getLatitude());
+            if (distance == 0) {
+                throw new RideShareException(HttpStatus.BAD_REQUEST.value(), "Invalid route");
+            }
 
             // build ride model
             Ride ride = Ride.builder()
