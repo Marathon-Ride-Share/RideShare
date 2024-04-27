@@ -59,6 +59,7 @@ public class RideLifecycleService {
             Ride ride = rideRepository.findById(rideId).orElseThrow(() -> new RuntimeException("Ride not found"));
             ride.setStatus("COMPLETED");
             ride.setEndTime(endTime);
+            ride.setPrice(ride.getPrice() * ride.getPassengers().size());
             rideRepository.save(ride);
 
             // create Kafka event
