@@ -34,14 +34,17 @@ public class PaymentServiceClient {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
+            // create payment order
             Map<String, Object> map = new HashMap<>();
             map.put("userId", userId);
             map.put("amount", amount);
 
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
 
+            // send request to payment service
             ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
 
+            // parse response
             if (!response.getStatusCode().is2xxSuccessful() && response.getBody() == null) {
                 throw new RuntimeException("Failed to create payment order");
             }

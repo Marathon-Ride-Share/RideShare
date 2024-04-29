@@ -20,6 +20,8 @@ public class RideShareController {
     private final RideQueryService rideQueryService;
     private final RideLifecycleService rideLifecycleService;
 
+
+    // Controller constructor
     @Autowired
     public RideShareController(RideCreationService rideCreationService,
                                RideBookingService rideBookingService,
@@ -30,6 +32,8 @@ public class RideShareController {
         this.rideQueryService = rideQueryService;
         this.rideLifecycleService = rideLifecycleService;
     }
+
+    // API endpoint for creating a ride
     @PostMapping("/rides")
     public ResponseEntity<?> createRide(@RequestBody CreateRideRequest request) {
         try {
@@ -40,6 +44,7 @@ public class RideShareController {
         }
     }
 
+    // API endpoint for booking a ride
     @PostMapping("/rides/book")
     public ResponseEntity<?> bookRide(@RequestBody BookRideRequest request) {
         try {
@@ -50,6 +55,7 @@ public class RideShareController {
         }
     }
 
+    // API endpoint for getting ride details
     @GetMapping("/rides/{rideId}")
     public ResponseEntity<?> getRideDetails(@PathVariable String rideId) {
         try {
@@ -60,6 +66,7 @@ public class RideShareController {
         }
     }
 
+    // API endpoint for searching rides
     @PostMapping("/rides/search")
     public ResponseEntity<?> searchRides(@RequestBody SearchRideRequest request) {
         try {
@@ -70,6 +77,7 @@ public class RideShareController {
         }
     }
 
+    // API endpoint for starting a ride
     @PatchMapping("/rides/{rideId}/start")
     public ResponseEntity<?> startRide(@PathVariable String rideId, @RequestBody StartRideRequest request) {
         try {
@@ -80,6 +88,7 @@ public class RideShareController {
         }
     }
 
+    // API endpoint for completing a ride
     @PatchMapping("/rides/{rideId}/complete")
     public ResponseEntity<?> completeRide(@PathVariable String rideId, @RequestBody CompleteRideRequest request) {
         try {
@@ -90,6 +99,7 @@ public class RideShareController {
         }
     }
 
+    // API endpoint for getting ride history
     @GetMapping("/rides/history/{userId}")
     public ResponseEntity<?> getRideHistory(@PathVariable String userId) {
         try {

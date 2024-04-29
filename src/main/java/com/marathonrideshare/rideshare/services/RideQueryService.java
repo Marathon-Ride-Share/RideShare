@@ -83,10 +83,11 @@ public class RideQueryService {
 
             System.out.println("List of all rides in db: " + allRides);
 
-            // filter rides by origin and destination
+            // filter rides by origin and destination within 50 km and available seats and date time
             List<Ride> validRides = allRides.stream()
                     .filter(ride -> isWithin50Km(ride.getOrigin(), request.getLocation()) || isWithin50Km(ride.getDestination(), request.getLocation()))
                     .filter(ride -> ride.getAvailableSeats() > 0)
+                    .filter(ride -> ride.getStartTime().toLocalDate().isEqual(request.getDatetime().toLocalDate()))
                     .filter(ride -> ride.getStartTime().isBefore(request.getDatetime()))
                     .toList();
 

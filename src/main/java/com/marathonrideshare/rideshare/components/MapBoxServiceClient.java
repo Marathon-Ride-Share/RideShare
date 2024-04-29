@@ -30,11 +30,14 @@ public class MapBoxServiceClient {
 
     public double getDistance(double lon1, double lat1, double lon2, double lat2) throws RideShareException {
         try {
+            // get distance between two points
             String coordinates = String.format("%f,%f;%f,%f", lon1, lat1, lon2, lat2);
             String url = mapboxDirectionsUrl + "/" + coordinates + "?access_token=" + mapboxAccessToken;
 
+            // get distance from mapbox
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
+            // parse response
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                 JSONObject json = new JSONObject(response.getBody());
                 if (!json.getJSONArray("routes").isEmpty()) {

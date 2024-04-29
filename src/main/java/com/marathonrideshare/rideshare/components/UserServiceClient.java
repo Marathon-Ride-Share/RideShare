@@ -26,6 +26,7 @@ public class UserServiceClient {
 
     public UserInfo getUserInfo(String userId) throws RideShareException {
         try {
+            // get user info
             String url = userServiceUrl + userId;
             System.out.println("match USer class"+restTemplate.getForObject(url, UserInfo.class));
             return restTemplate.getForObject(url, UserInfo.class);
